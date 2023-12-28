@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuoteGen - generate your quote</title>
+  <link rel="icon" type="image/png" href="fav.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&display=swap');
+
+    html {
+      height: 100%;
+      width: 100%;
+    }
+
+    :root {
+      --font-pri: 'Poppins', sans-serif;
+      --color-body: #D8D9DA;
+
+    }
+
+    body {
+      margin: 0px;
+      padding: 0px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      background-color: var(--color-body);
+      font-family: var(--font-pri);
+    }
+
+    nav {
+      background-color: black;
+      display: flex;
+      /*align-items: center;
+      justify-content: center;*/
+      width: 100%;
+    }
+
+    nav>h1 {
+      font-size: 30px;
+      color: white;
+      text-align: center;
+      margin-left: 50px;
+
+    }
+
+    @media only screen and(max-width: 500px) {
+      nav>h1 {
+        margin-left: 0px;
+      }
+    }
+
+    nav>img {
+      width: 40px;
+      height: 40px;
+      filter: invert(100%);
+
+    }
+
+    nav>img#left {
+      position: absolute;
+      top: 15px;
+      left: 20px;
+    }
+
+    nav>img#right {
+      position: absolute;
+      right: 30px;
+      top: 80px;
+      transform: scaleX(-1);
+    }
+
+    #main_card {
+      width: 80vw;
+      max-width: 588px;
+      height: 50%;
+      align-self: center;
+      margin: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+
+    }
+
+    .card {
+      border-radius: 20px;
+      background-color: white;
+    }
+
+    .btns {
+      background-color: black;
+      border-radius: 5px;
+      margin: 0px 7px;
+      border: 1px solid black;
+      color: white;
+      font-family: var(--font-pri);
+      font-weight: light;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+
+    .btns:active {
+      background-color: white;
+      border-radius: 5px;
+      border: 1px solid black;
+      color: black;
+      box-sizing: border-box;
+
+      font-weight: light;
+      font-size: 15px;
+    }
+
+    
+    #arrow_cont {
+      width: 50%;
+
+      height: 50%;
+      transform: rotateZ(-150deg) translateX(-50px) translateY(-30px);
+
+    }
+
+    svg {
+      max-width: 100px;
+    }
+
+    #show_cont {
+      position: absolute;
+      top: 40px;
+      padding: 0px 25px;
+      display: flex;
+      flex-direction: column;
+      font-size: 15px;
+    }
+
+    #quote {
+      height: 100px;
+      overflow-y: auto;
+      max-width: 400px;
+    }
+
+    #author {
+      text-align: right;
+      font-size: 20;
+    }
+
+    #show_cont>span {
+      font-size: 40px;
+    }
+  </style>
+
+</head>
+
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"
+    integrity="sha512-jEnuDt6jfecCjthQAJ+ed0MTVA++5ZKmlUcmDGBv2vUI/REn6FuIdixLNnQT+vKusE2hhTk2is3cFvv5wA+Sgg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <header>
+    <nav>
+
+      <h1>Random Quote Generator</h1>
+    </nav>
+  </header>
+  <div id="main_card" class="card">
+    <div id="show_cont">
+      <span>Click here</span>
+      <div id="arrow_cont"></div>
+    </div>
+    <div style="bottom: 20px; justify-content: center; align-items:center; display: flex; width: 100%; height:fit-content; position: absolute;"> <button id="generate_btn" class="btns" onclick="generate()">Generate</button>
+      <button id="copy_btn" class="btns" onclick="copy()">Copy</button></div>
+   
+  </div>
+  <script>
+
+    let show_cont = document.getElementById('show_cont');
+    function generate() {
+      show_cont.innerHTML = '<div id="load_cont"></div>';
+      let anim = lottie.loadAnimation({
+        container: show_cont,
+        autoplay: true,
+        renderer: 'svg',
+        path: 'preloader_lottie.json',
+        loop: true
+      })
+      fetch('/givequote').then((resp) => {
+        return resp.json();
+      }).then((data) => {
+        let inner = '<div id="quote"></div><br><div id="author"></div>'
+        let obj = JSON.parse(data);
+        show_cont.innerHTML = inner;
+        let quote_cont = document.getElementById('quote');
+        let author_cont = document.getElementById('author');
+        quote_cont.innerHTML = `"${obj.quoteText}"`;
+        author_cont.innerHTML = `~${obj.quoteAuthor}`;
+
+      })
+    }
+    let anim = lottie.loadAnimation({
+      container: document.getElementById('arrow_cont'),
+      autoplay: true,
+      renderer: 'svg',
+      path: 'arrow_lottie.json',
+      loop: true
+    })
+
+    function copy(){
+      let quote_cont = document.getElementById('quote');
+      // console.log(quote_cont.innerHTML);
+      navigator.clipboard.writeText(quote_cont.innerText);
+    }
+  </script>
+
+</body>
+
+</html>

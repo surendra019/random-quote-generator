@@ -6,4 +6,4 @@ A simple quote generator which fetches quote from the quote library, read the JS
 
 ## Try it
 
-https://dull-erin-sturgeon-sock.cyclic.app/
+https://random-quote-generator-y30h.onrender.com/
